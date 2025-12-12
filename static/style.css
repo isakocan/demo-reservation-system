@@ -1,0 +1,218 @@
+/* --- GENEL AYARLAR --- */
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+    color: #333;
+}
+
+/* --- GİRİŞ / KAYIT EKRANI --- */
+.auth-container {
+    max-width: 420px;
+    margin: 60px auto;
+}
+.auth-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    background: #fff;
+    overflow: hidden;
+}
+.auth-header {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    padding: 30px 20px;
+    color: white;
+    text-align: center;
+}
+
+/* --- NAVBAR (ÜST MENÜ) --- */
+.navbar {
+    background-color: #fff !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 0.8rem 1.5rem;
+}
+.navbar-brand img {
+    height: 45px;
+    margin-right: 10px;
+}
+.navbar-brand span {
+    font-weight: 700;
+    color: #1a1a1a;
+    vertical-align: middle;
+}
+
+/* --- TAKVİM (GRID) YAPISI --- */
+.calendar-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+.day-column {
+    border-right: 1px solid #f0f0f0;
+    min-height: 600px;
+    background-color: #fff;
+    transition: background-color 0.3s;
+}
+.day-column:last-child {
+    border-right: none;
+}
+
+/* GÜN BAŞLIĞI VE EMOJİ TASARIMI */
+.day-header {
+    position: relative;
+    height: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid #e9ecef;
+    background-color: #fcfcfc;
+    overflow: hidden; /* Emoji dışarı taşmasın */
+}
+
+/* Silik Emoji (Header Arkası) */
+.weather-bg-icon {
+    position: absolute;
+    font-size: 5rem;
+    opacity: 0.12; /* Çok silik */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+    filter: grayscale(30%);
+}
+
+.day-title {
+    position: relative;
+    z-index: 2; /* Emojinin üstünde kalsın */
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #2c3e50;
+}
+
+.day-date {
+    position: relative;
+    z-index: 2;
+    font-size: 0.85rem;
+    color: #7f8c8d;
+}
+
+/* Çan İkonu (Bildirim) */
+.btn-alarm-header {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 3;
+    color: #ffc107;
+    background: transparent;
+    border: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.btn-alarm-header:hover {
+    transform: scale(1.2);
+    color: #ffca2c;
+}
+
+/* --- SAAT KUTUCUKLARI (SLOTS) --- */
+.time-slot {
+    position: relative;
+    margin: 10px 8px;
+    padding: 12px 5px;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    font-size: 0.85rem;
+}
+.time-slot:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.time-slot strong {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 0.95rem;
+}
+
+/* DURUM RENKLERİ */
+/* 1. Boş */
+.slot-bos {
+    background-color: #f0fff4;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+.slot-bos:hover { background-color: #d4edda; }
+
+/* 2. Dolu (Başkası - İsim Gizli) */
+.slot-dolu {
+    background-color: #fff5f5;
+    border: 1px solid #f5c6cb;
+    color: #a71d2a;
+    /* pointer-events: none; -> Alarm kurmak için tıklanabilir olmalı */
+}
+
+/* 3. Sizin (Benim Aldığım) */
+.slot-sizin {
+    background-color: #e7f1ff;
+    border: 1px solid #b6d4fe;
+    color: #0d6efd;
+    font-weight: bold;
+}
+.slot-sizin::after {
+    content: ' \f00c'; /* FontAwesome Check */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+}
+
+/* 4. Bakım (Admin Kapattı) */
+.slot-bakim {
+    background-color: #e9ecef;
+    border: 1px solid #dee2e6;
+    color: #6c757d;
+    cursor: not-allowed;
+    background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(0,0,0,0.05) 10px,
+        rgba(0,0,0,0.05) 20px
+    );
+}
+
+/* --- İLAN PANOSU --- */
+.bulletin-card {
+    border-left: 4px solid #0d6efd;
+    transition: transform 0.2s;
+}
+.bulletin-card:hover {
+    transform: translateX(5px);
+}
+.bulletin-info {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* --- TOAST (MÜJDE BİLDİRİMİ) --- */
+.toast-custom {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    background-color: #198754; /* Yeşil */
+    color: white;
+    border-radius: 8px;
+    padding: 15px 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    animation: slideIn 0.5s ease-out;
+}
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
