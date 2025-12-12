@@ -68,14 +68,14 @@ body {
     justify-content: center;
     border-bottom: 2px solid #e9ecef;
     background-color: #fcfcfc;
-    overflow: hidden; /* Emoji dışarı taşmasın */
+    overflow: hidden; 
 }
 
 /* Silik Emoji (Header Arkası) */
 .weather-bg-icon {
     position: absolute;
     font-size: 5rem;
-    opacity: 0.12; /* Çok silik */
+    opacity: 0.12;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -86,7 +86,7 @@ body {
 
 .day-title {
     position: relative;
-    z-index: 2; /* Emojinin üstünde kalsın */
+    z-index: 2;
     font-weight: 700;
     font-size: 1.1rem;
     color: #2c3e50;
@@ -153,7 +153,6 @@ body {
     background-color: #fff5f5;
     border: 1px solid #f5c6cb;
     color: #a71d2a;
-    /* pointer-events: none; -> Alarm kurmak için tıklanabilir olmalı */
 }
 
 /* 3. Sizin (Benim Aldığım) */
@@ -182,6 +181,29 @@ body {
         rgba(0,0,0,0.05) 10px,
         rgba(0,0,0,0.05) 20px
     );
+}
+
+/* 5. Pending (Turuncu Kilit / Seçiliyor) */
+.slot-pending {
+    background-color: #fff3cd;
+    border: 1px solid #ffecb5;
+    color: #856404;
+    font-weight: bold;
+    animation: pulseOrange 2s infinite;
+    cursor: not-allowed; /* Tıklanamaz işareti */
+}
+
+/* Sizin seçtiğiniz (Modal açıkken arkada görünen) */
+.slot-pending-mine {
+    background-color: #fff3cd;
+    border: 2px solid #ffc107; /* Daha belirgin çerçeve */
+    color: #856404;
+}
+
+@keyframes pulseOrange {
+    0% { background-color: #fff3cd; }
+    50% { background-color: #ffe69c; }
+    100% { background-color: #fff3cd; }
 }
 
 /* --- İLAN PANOSU --- */

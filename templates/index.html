@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>YTÜ Akıllı Halı Saha | Demo 3.0</title>
+    <title>YTÜ Akıllı Halı Saha</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -13,6 +13,34 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link rel="stylesheet" href="/static/style.css" />
+    <style>
+      /* Dinamik JavaScript Badge Stilleri - JS tarafından kullanıldığı için burada */
+      .weather-small {
+        font-size: 0.75rem;
+        opacity: 0.8;
+        margin-top: 2px;
+      }
+      .alarm-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: #ffc107;
+        color: #000;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 10;
+      }
+      .header-alarm-active {
+        color: #ffc107 !important;
+        transform: scale(1.2);
+      }
+    </style>
   </head>
   <body>
     <div id="auth-screen" class="container auth-container">
@@ -24,7 +52,7 @@
             style="height: 60px; margin-bottom: 10px"
           />
           <h4>Spor Tesisleri</h4>
-          <p class="mb-0 small opacity-75">Randevu Sistemi</p>
+          <p class="mb-0 small opacity-75">Online Randevu Sistemi</p>
         </div>
         <div class="card-body p-4">
           <div id="login-form">
@@ -47,13 +75,8 @@
               Giriş Yap
             </button>
             <div class="text-center mt-3">
-              <small class="text-muted">Hesabın yok mu?</small>
-              <a
-                href="#"
-                onclick="toggleAuth()"
-                class="text-decoration-none fw-bold"
-                >Kayıt Ol</a
-              >
+              <small>Hesabın yok mu?</small>
+              <a href="#" onclick="toggleAuth()" class="fw-bold">Kayıt Ol</a>
             </div>
           </div>
           <div id="register-form" class="d-none">
@@ -97,12 +120,7 @@
               Kaydı Tamamla
             </button>
             <div class="text-center mt-3">
-              <a
-                href="#"
-                onclick="toggleAuth()"
-                class="text-decoration-none small"
-                >Giriş'e Dön</a
-              >
+              <a href="#" onclick="toggleAuth()">Giriş'e Dön</a>
             </div>
           </div>
         </div>
@@ -110,37 +128,36 @@
     </div>
 
     <div id="dashboard" class="d-none">
-      <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">
-            <img src="/static/ytu_logo.png" alt="Logo" />
-            <span>YTÜ Spor</span>
-          </a>
-          <div class="d-flex align-items-center">
-            <div class="me-3 text-end d-none d-md-block">
-              <div
-                id="user-name"
-                class="fw-bold text-dark"
-                style="font-size: 0.9rem"
-              ></div>
-              <div
-                id="user-role"
-                class="badge bg-secondary"
-                style="font-size: 0.7rem"
-              ></div>
-            </div>
-            <button
-              onclick="location.reload()"
-              class="btn btn-outline-danger btn-sm"
-            >
-              Çıkış
-            </button>
+      <nav
+        class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-4"
+      >
+        <a class="navbar-brand" href="#">
+          <img src="/static/ytu_logo.png" alt="Logo" />
+          <span class="d-none d-md-inline">YTÜ Spor</span>
+        </a>
+        <div class="d-flex align-items-center ms-auto">
+          <div class="text-end me-3 d-none d-md-block">
+            <div
+              id="user-name"
+              class="fw-bold text-dark"
+              style="font-size: 0.9rem"
+            ></div>
+            <div
+              id="user-role"
+              class="badge bg-secondary"
+              style="font-size: 0.7rem"
+            ></div>
           </div>
+          <button onclick="logout()" class="btn btn-outline-danger btn-sm">
+            Çıkış
+          </button>
         </div>
       </nav>
 
       <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <div
+          class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2"
+        >
           <ul class="nav nav-pills">
             <li class="nav-item">
               <button
@@ -163,35 +180,59 @@
             </li>
           </ul>
 
-          <div class="d-flex gap-2 align-items-center">
-            <div class="input-group input-group-sm">
-              <span class="input-group-text bg-white"
-                ><i class="fa-regular fa-clock"></i> Simülasyon:</span
-              >
-              <input
-                type="date"
-                id="sim-date"
-                class="form-control"
-                onchange="renderCalendar()"
-              />
-            </div>
+          <div
+            class="bg-white border rounded p-1 d-flex align-items-center shadow-sm"
+          >
+            <button
+              class="btn btn-sm btn-light text-muted"
+              onclick="setTimeGroup('day')"
+              id="btn-day"
+            >
+              <i class="fa-regular fa-sun"></i> Gündüz (12-18)
+            </button>
+            <div class="vr mx-2"></div>
+            <button
+              class="btn btn-sm btn-dark"
+              onclick="setTimeGroup('evening')"
+              id="btn-evening"
+            >
+              <i class="fa-solid fa-moon"></i> Akşam (18-24)
+            </button>
+          </div>
 
-            <div id="admin-controls" class="d-none">
-              <div class="btn-group btn-group-sm">
-                <button
-                  onclick="setSystemMode('sliding')"
-                  class="btn btn-outline-dark active"
-                  id="btn-mode-sliding"
+          <div class="input-group input-group-sm w-auto shadow-sm">
+            <button class="btn btn-light border" onclick="changeDate(-1)">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <input
+              type="date"
+              id="sim-date"
+              class="form-control text-center fw-bold"
+              style="width: 110px"
+              onchange="renderCalendar()"
+            />
+            <button class="btn btn-light border" onclick="changeDate(1)">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+
+            <div
+              id="admin-panel"
+              class="d-none align-items-center ms-3 border-start ps-3"
+            >
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="modeSwitch"
+                  onchange="handleModeSwitch()"
+                />
+                <label
+                  class="form-check-label small fw-bold text-muted"
+                  for="modeSwitch"
+                  id="modeLabel"
                 >
-                  Kayar
-                </button>
-                <button
-                  onclick="setSystemMode('classic')"
-                  class="btn btn-outline-dark"
-                  id="btn-mode-classic"
-                >
-                  Klasik (Pzt)
-                </button>
+                  Kayan Mod
+                </label>
               </div>
             </div>
           </div>
@@ -209,9 +250,7 @@
               <div class="col-md-4">
                 <div class="card shadow-sm border-0 mb-3">
                   <div class="card-header bg-primary text-white">
-                    <h6 class="mb-0">
-                      <i class="fa-solid fa-plus"></i> İlan Ver
-                    </h6>
+                    <h6><i class="fa-solid fa-plus"></i> İlan Ver</h6>
                   </div>
                   <div class="card-body">
                     <input
@@ -257,48 +296,18 @@
             <h5 class="modal-title">Randevu Onayı</h5>
             <button
               type="button"
-              class="btn-close btn-close-white"
+              class="btn-close"
               data-bs-dismiss="modal"
             ></button>
           </div>
           <div class="modal-body text-center">
             <div class="display-6 mb-2">⚽</div>
             <p id="res-detail-text" class="fw-bold"></p>
-            <small class="text-muted">Bu saati rezerve etmek üzeresiniz.</small>
+            <div class="alert alert-light border" id="weather-modal-info"></div>
           </div>
           <div class="modal-footer">
             <button onclick="confirmReserve()" class="btn btn-success w-100">
-              Onayla
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal fade" id="modalCancel" tabindex="-1">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header bg-primary text-white">
-            <h5 class="modal-title">Rezervasyon Detayı</h5>
-            <button
-              type="button"
-              class="btn-close btn-close-white"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <div class="alert alert-info">
-              <strong>Bu saha sizin!</strong><br />
-              Saha No: A-1 <br />
-              Giriş için öğrenci kimliğinizi gösteriniz.
-            </div>
-            <p class="small text-danger">
-              * Maça 24 saatten az kaldıysa iptal edilemez.
-            </p>
-          </div>
-          <div class="modal-footer">
-            <button onclick="cancelReservation()" class="btn btn-danger w-100">
-              İptal Et
+              Onayla ve Bitir
             </button>
           </div>
         </div>
@@ -309,7 +318,7 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header bg-warning">
-            <h5 class="modal-title">🔔 Yer Açılırsa Haber Ver</h5>
+            <h5 class="modal-title">🔔 Alarm Kur</h5>
             <button
               type="button"
               class="btn-close"
@@ -317,33 +326,44 @@
             ></button>
           </div>
           <div class="modal-body">
-            <p>Şu an için yer yok. Bildirim almak ister misiniz?</p>
-            <input type="hidden" id="alarm-type" />
-            <button onclick="setAlarm()" class="btn btn-outline-dark w-100">
-              <i class="fa-solid fa-bell"></i> Alarm Kur
+            <p>
+              Bu saat şu an dolu. Biri iptal ederse anında bildirim almak ister
+              misin?
+            </p>
+            <button
+              onclick="setAlarm()"
+              class="btn btn-outline-dark w-100 mb-2"
+            >
+              <i class="fa-solid fa-bell"></i> Alarmı Kur
             </button>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="modal fade" id="modalAdmin" tabindex="-1">
+    <div class="modal fade" id="modalCancel" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-          <div class="modal-header bg-dark text-white">
-            <h5 class="modal-title">Yönetici İşlemi</h5>
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title">Rezervasyonum</h5>
             <button
               type="button"
-              class="btn-close btn-close-white"
+              class="btn-close"
               data-bs-dismiss="modal"
             ></button>
           </div>
-          <div class="modal-body text-center">
-            <button
-              onclick="toggleMaintenance()"
-              class="btn btn-danger btn-lg w-100"
+          <div class="modal-body">
+            <div class="alert alert-info">
+              <strong>Saha No: A-1</strong><br />Girişte öğrenci kimliğinizi
+              gösteriniz.
+            </div>
+            <small class="text-danger"
+              >* Maça 24 saatten az kaldıysa iptal edilemez.</small
             >
-              <i class="fa-solid fa-power-off"></i> Durumu Değiştir (Aç/Kapat)
+          </div>
+          <div class="modal-footer">
+            <button onclick="cancelReservation()" class="btn btn-danger w-100">
+              İptal Et
             </button>
           </div>
         </div>
@@ -353,343 +373,6 @@
     <div id="notification-area"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-      // --- GLOBAL DEĞİŞKENLER ---
-      let currentUser = null;
-      let currentResId = null; // İptal işlemi için ID
-      let selectedDate = null;
-      let selectedSlot = null;
-
-      // Hava Durumu Verileri (Sırasıyla: Pzt, Sal, Çar, Per, Cum, Cmt, Paz)
-      // Not: JS getDay() Pazar=0 döner. Ona göre ayarlayacağız.
-      const weatherIcons = {
-        1: { emoji: "🌧️", name: "Pzt" },
-        2: { emoji: "⛅", name: "Sal" },
-        3: { emoji: "☀️", name: "Çar" },
-        4: { emoji: "💨", name: "Per" },
-        5: { emoji: "☁️", name: "Cum" },
-        6: { emoji: "🌩️", name: "Cmt" },
-        0: { emoji: "☀️", name: "Paz" },
-      };
-
-      window.onload = () => {
-        document.getElementById("sim-date").valueAsDate = new Date();
-        // Polling'i Başlat (Canlı Bildirim)
-        setInterval(checkNotifications, 4000);
-      };
-
-      // --- AUTH ---
-      function toggleAuth() {
-        document.getElementById("login-form").classList.toggle("d-none");
-        document.getElementById("register-form").classList.toggle("d-none");
-      }
-
-      async function login() {
-        const email = document.getElementById("login-email").value;
-        const password = document.getElementById("login-pass").value;
-        const res = await fetch("/api/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        });
-        const data = await res.json();
-        if (data.success) {
-          currentUser = data.user;
-          document.getElementById("auth-screen").classList.add("d-none");
-          document.getElementById("dashboard").classList.remove("d-none");
-          document.getElementById("user-name").innerText =
-            currentUser.first_name + " " + currentUser.last_name;
-          document.getElementById("user-role").innerText =
-            currentUser.role === "admin" ? "YÖNETİCİ" : "ÖĞRENCİ";
-
-          if (currentUser.role === "admin")
-            document
-              .getElementById("admin-controls")
-              .classList.remove("d-none");
-          renderCalendar();
-        } else {
-          alert(data.message);
-        }
-      }
-
-      async function register() {
-        const payload = {
-          name: document.getElementById("reg-name").value,
-          surname: document.getElementById("reg-surname").value,
-          student_id: document.getElementById("reg-student-id").value,
-          email: document.getElementById("reg-email").value,
-          password: document.getElementById("reg-pass").value,
-        };
-        const res = await fetch("/api/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-        const data = await res.json();
-        alert(data.message);
-        if (data.success) toggleAuth();
-      }
-
-      // --- TAKVİM RENDER (EN ÖNEMLİ KISIM) ---
-      async function renderCalendar() {
-        const dateVal = document.getElementById("sim-date").value;
-        const grid = document.getElementById("calendar-grid");
-        grid.innerHTML =
-          '<div class="text-center p-5 w-100">Yükleniyor...</div>';
-
-        const res = await fetch(
-          `/api/reservations?start_date=${dateVal}&user_id=${currentUser.id}`
-        );
-        const reservations = await res.json();
-
-        grid.innerHTML = "";
-        const startDate = new Date(dateVal);
-
-        // 7 Gün Döngüsü
-        for (let i = 0; i < 7; i++) {
-          let d = new Date(startDate);
-          d.setDate(startDate.getDate() + i);
-          let dateStr = d.toISOString().split("T")[0];
-          let dayIdx = d.getDay();
-          let wInfo = weatherIcons[dayIdx];
-
-          // Sütun
-          let col = document.createElement("div");
-          col.className = "col day-column";
-
-          // Header (Emoji + Çan)
-          col.innerHTML = `
-                    <div class="day-header">
-                        <div class="weather-bg-icon">${wInfo.emoji}</div>
-                        <div class="day-title">${wInfo.name}</div>
-                        <div class="day-date">${d.getDate()}.${
-            d.getMonth() + 1
-          }</div>
-                        <button class="btn-alarm-header" onclick="openAlarmModal('${dateStr}', null)" title="Bu gün için alarm kur">
-                            <i class="fa-solid fa-bell"></i>
-                        </button>
-                    </div>
-                `;
-
-          // Saatler (12:00 - 24:00)
-          for (let h = 12; h < 24; h++) {
-            // Bu saatte kayıt var mı?
-            let booking = reservations.find(
-              (r) => r.reservation_date === dateStr && r.time_slot === h
-            );
-
-            let slotDiv = document.createElement("div");
-            let statusClass = "slot-bos";
-            let statusText = "Boş";
-
-            if (booking) {
-              if (booking.is_mine) {
-                statusClass = "slot-sizin";
-                statusText = booking.display_name; // "SİZİN"
-              } else if (booking.status === "maintenance") {
-                statusClass = "slot-bakim";
-                statusText = "BAKIMDA";
-              } else {
-                statusClass = "slot-dolu";
-                statusText = booking.display_name; // "DOLU"
-              }
-            }
-
-            slotDiv.className = `time-slot ${statusClass}`;
-            slotDiv.innerHTML = `<strong>${h}:00 - ${
-              h + 1
-            }:00</strong><span>${statusText}</span>`;
-
-            // Tıklama Olayları
-            slotDiv.onclick = () => handleSlotClick(dateStr, h, booking);
-            col.appendChild(slotDiv);
-          }
-          grid.appendChild(col);
-        }
-      }
-
-      // --- TIKLAMA YÖNETİCİSİ ---
-      function handleSlotClick(date, slot, booking) {
-        selectedDate = date;
-        selectedSlot = slot;
-
-        if (currentUser.role === "admin") {
-          new bootstrap.Modal(document.getElementById("modalAdmin")).show();
-          return;
-        }
-
-        if (booking) {
-          if (booking.is_mine) {
-            // Kendi randevusu -> İptal Ekranı
-            currentResId = booking.id;
-            new bootstrap.Modal(document.getElementById("modalCancel")).show();
-          } else if (booking.status === "active") {
-            // Başkasının -> Alarm Ekranı
-            openAlarmModal(date, slot);
-          }
-          // Bakımdaysa hiçbir şey yapma
-        } else {
-          // Boş -> Randevu Al
-          document.getElementById(
-            "res-detail-text"
-          ).innerText = `${date} | ${slot}:00`;
-          new bootstrap.Modal(document.getElementById("modalReserve")).show();
-        }
-      }
-
-      // --- İŞLEM FONKSİYONLARI ---
-      async function confirmReserve() {
-        const res = await fetch("/api/reserve", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            user_id: currentUser.id,
-            date: selectedDate,
-            time_slot: selectedSlot,
-          }),
-        });
-        const data = await res.json();
-        bootstrap.Modal.getInstance(
-          document.getElementById("modalReserve")
-        ).hide();
-        alert(data.message);
-        if (data.success) renderCalendar();
-      }
-
-      async function cancelReservation() {
-        const res = await fetch("/api/cancel", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            reservation_id: currentResId,
-            simulation_date: document.getElementById("sim-date").value,
-          }),
-        });
-        const data = await res.json();
-        bootstrap.Modal.getInstance(
-          document.getElementById("modalCancel")
-        ).hide();
-        alert(data.message);
-        if (data.success) renderCalendar();
-      }
-
-      function openAlarmModal(date, slot) {
-        selectedDate = date;
-        selectedSlot = slot; // null ise tüm gün demektir
-        new bootstrap.Modal(document.getElementById("modalAlarm")).show();
-      }
-
-      async function setAlarm() {
-        const res = await fetch("/api/alarm", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            user_id: currentUser.id,
-            date: selectedDate,
-            time_slot: selectedSlot,
-          }),
-        });
-        const data = await res.json();
-        bootstrap.Modal.getInstance(
-          document.getElementById("modalAlarm")
-        ).hide();
-        alert(data.message);
-      }
-
-      async function toggleMaintenance() {
-        await fetch("/api/maintenance", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            user_id: currentUser.id,
-            date: selectedDate,
-            time_slot: selectedSlot,
-          }),
-        });
-        bootstrap.Modal.getInstance(
-          document.getElementById("modalAdmin")
-        ).hide();
-        renderCalendar();
-      }
-
-      // --- İLAN PANOSU ---
-      async function loadBoard() {
-        const res = await fetch("/api/board");
-        const posts = await res.json();
-        const list = document.getElementById("board-list");
-        list.innerHTML = "";
-        posts.forEach((p) => {
-          list.innerHTML += `
-                    <div class="col-12">
-                        <div class="card bulletin-card p-3 shadow-sm">
-                            <h6 class="fw-bold mb-1">${p.title}</h6>
-                            <p class="mb-2 text-dark">${p.message}</p>
-                            <div class="bulletin-info d-flex justify-content-between">
-                                <span><i class="fa-solid fa-user"></i> ${p.first_name} ${p.last_name[0]}.</span>
-                                <span><i class="fa-solid fa-phone"></i> ${p.contact_info}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-        });
-      }
-
-      async function addPost() {
-        await fetch("/api/board", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            user_id: currentUser.id,
-            title: document.getElementById("post-title").value,
-            message: document.getElementById("post-msg").value,
-            contact: document.getElementById("post-contact").value,
-          }),
-        });
-        document.getElementById("post-msg").value = "";
-        loadBoard();
-      }
-
-      // --- SİSTEM AYARLARI (ADMIN) ---
-      async function setSystemMode(mode) {
-        await fetch("/api/settings", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ mode }),
-        });
-        document
-          .getElementById("btn-mode-sliding")
-          .classList.toggle("active", mode === "sliding");
-        document
-          .getElementById("btn-mode-classic")
-          .classList.toggle("active", mode === "classic");
-        renderCalendar();
-      }
-
-      // --- CANLI BİLDİRİM (POLLING) ---
-      async function checkNotifications() {
-        if (!currentUser) return;
-        try {
-          const res = await fetch(
-            `/api/notifications?user_id=${currentUser.id}`
-          );
-          const alerts = await res.json();
-
-          alerts.forEach((a) => {
-            showToast(
-              `MÜJDE! ${a.date} tarihindeki ${a.slot} alarmınız için yer açıldı!`
-            );
-          });
-        } catch (e) {}
-      }
-
-      function showToast(msg) {
-        const area = document.getElementById("notification-area");
-        const toast = document.createElement("div");
-        toast.className = "toast-custom";
-        toast.innerHTML = `<i class="fa-solid fa-bell me-2"></i> ${msg}`;
-        area.appendChild(toast);
-        setTimeout(() => toast.remove(), 6000);
-      }
-    </script>
+    <script src="/static/main.js"></script>
   </body>
 </html>
